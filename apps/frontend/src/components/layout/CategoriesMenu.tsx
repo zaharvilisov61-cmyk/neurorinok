@@ -180,7 +180,7 @@ function ModelsMegaMenu({
           return (
             <Link
               key={model.slug}
-              href={`/category/${model.slug}`}
+              href={`/marketplace/${model.slug}`}
               onMouseEnter={() => onModelHover(model.slug)}
               onClick={onClose}
               className={`
@@ -200,7 +200,7 @@ function ModelsMegaMenu({
       {/* Right: subcategory grid */}
       <div className="flex-1 pl-6 overflow-y-auto no-scrollbar">
         <Link
-          href={`/category/${activeModel.slug}`}
+          href={`/marketplace/${activeModel.slug}`}
           onClick={onClose}
           className="block text-sm font-semibold text-white mb-3 hover:text-[#96daff] transition-colors"
         >
@@ -213,7 +213,7 @@ function ModelsMegaMenu({
           {activeModel.categories.map(cat => (
             <Link
               key={cat}
-              href={`/category/${activeModel.slug}?category=${encodeURIComponent(cat)}`}
+              href={`/marketplace/${activeModel.slug}?category=${encodeURIComponent(cat)}`}
               onClick={onClose}
               className="text-sm text-white/55 hover:text-white transition-colors truncate"
             >
@@ -241,7 +241,7 @@ function CategoryGrid({
   return (
     <div>
       <Link
-        href={`/category/${tabId}`}
+        href={`/marketplace/${tabId}`}
         onClick={onClose}
         className="block text-sm font-semibold text-white mb-3 hover:text-[#96daff] transition-colors"
       >
@@ -254,7 +254,7 @@ function CategoryGrid({
         {categories.map(cat => (
           <Link
             key={cat}
-            href={`/category/${tabId}?category=${encodeURIComponent(cat)}`}
+            href={`/marketplace/${tabId}?category=${encodeURIComponent(cat)}`}
             onClick={onClose}
             className="text-sm text-white/55 hover:text-white transition-colors truncate"
           >

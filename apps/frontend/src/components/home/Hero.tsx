@@ -5,10 +5,10 @@ import { Search } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 
 const PLATFORM_LINKS = [
-  { name: 'Midjourney', color: '#ffa94d', href: '/category/midjourney' },
-  { name: 'ChatGPT', color: '#6ed654', href: '/category/chatgpt' },
-  { name: 'Veo', color: '#96daff', href: '/category/gemini' },
-  { name: 'Gemini', color: '#6ed654', href: '/category/gemini-image' },
+  { name: 'Midjourney', color: '#ffa94d', href: '/marketplace/midjourney' },
+  { name: 'ChatGPT', color: '#6ed654', href: '/marketplace/chatgpt' },
+  { name: 'Veo', color: '#96daff', href: '/marketplace/gemini' },
+  { name: 'Gemini', color: '#6ed654', href: '/marketplace/gemini-image' },
 ]
 
 const PUBLISHERS = [

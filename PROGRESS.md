@@ -49,10 +49,10 @@ Auth, User, Prompt, Marketplace, Order, Payment, Review, Search, Notification, A
 | Страница | Статус | Примечания |
 |----------|--------|------------|
 | `/` — Home | 🟡 В работе | Hero переделан, FeatureCards добавлены, нужен QA |
-| `/marketplace` | 🟡 В работе | Нужно убрать FilterSidebar, доделать |
+| `/marketplace` | ✅ Готово | Объединено с category, сортировка, без фильтров |
+| `/marketplace/[slug]` | ✅ Готово | Hero + промты + подкатегории, без фильтров |
 | `/prompt/[slug]` | ⬜ Не начата | |
 | `/profile/[username]` | ⬜ Не начата | |
-| `/category/[slug]` | 🟡 В работе | Hero + промты есть, нужен QA |
 | `/search` | ⬜ Не начата | |
 | `/login` | ⬜ Не начата | |
 | `/register` | ⬜ Не начата | |
@@ -119,10 +119,12 @@ Auth, User, Prompt, Marketplace, Order, Payment, Review, Search, Notification, A
 - `apps/frontend/src/components/home/FeaturedPrompts.tsx` — карусель
 - `apps/frontend/src/components/home/TrendingPrompts.tsx` — топ промтов
 
-### Страница категории `/category/[slug]`
-- `apps/frontend/src/app/category/[slug]/page.tsx`
+### Маркетплейс `/marketplace/[[...slug]]` (объединённая страница)
+- `apps/frontend/src/app/marketplace/[[...slug]]/page.tsx`
+- **Без slug** → заголовок + сортировка + сетка промтов
+- **Со slug** → Hero с градиентом + сортировка + сетка промтов + подкатегории
 - Все модели + все табы поддерживаются
-- **Без фильтров**: Hero + Featured + Free + подкатегории
+- **Без фильтров**: только сортировка (Top / New / Popular)
 
 ### Backend mock-данные
 - `apps/backend/src/prompts/prompts.service.ts` — 12 промтов в памяти
@@ -156,8 +158,7 @@ Auth, User, Prompt, Marketplace, Order, Payment, Review, Search, Notification, A
 | Файл | Описание |
 |------|----------|
 | `apps/frontend/src/app/page.tsx` | Главная страница |
-| `apps/frontend/src/app/marketplace/page.tsx` | Маркетплейс |
-| `apps/frontend/src/app/category/[slug]/page.tsx` | Страница категории |
+| `apps/frontend/src/app/marketplace/[[...slug]]/page.tsx` | Маркетплейс + категории (объединено) |
 | `apps/frontend/src/components/layout/Header.tsx` | Хедер (60px) |
 | `apps/frontend/src/components/layout/CategoriesMenu.tsx` | Мега-меню |
 | `apps/frontend/src/components/home/Hero.tsx` | Hero главной |

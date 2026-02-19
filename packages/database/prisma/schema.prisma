@@ -1,0 +1,574 @@
+// This is your Prisma schema file
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ===== USER MANAGEMENT =====
+
+model User {
+  id            String    @id @default(uuid())
+  email         String    @unique
+  username      String    @unique
+  passwordHash  String
+  firstName     String?
+  lastName      String?
+  avatar        String?
+  bio           String?
+  website       String?
+
+  role          UserRole  @default(USER)
+  status        UserStatus @default(ACTIVE)
+
+  emailVerified Boolean   @default(false)
+  verifiedAt    DateTime?
+
+  balance       Decimal   @default(0) @db.Decimal(10, 2)
+  sellerTrust   Float     @default(0)
+
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  deletedAt     DateTime?
+
+  // Relations
+  prompts       Prompt[]
+  purchases     Order[]    @relation("BuyerOrders")
+  sales         Order[]    @relation("SellerOrders")
+  reviews       Review[]   @relation("ReviewAuthor")
+  receivedReviews Review[] @relation("ReviewRecipient")
+  favorites     Favorite[]
+  following     Follower[] @relation("Following")
+  followers     Follower[] @relation("Followers")
+  notifications Notification[]
+  payouts       Payout[]
+  affiliates    Affiliate[]
+  reports       Report[]
+  sessions      Session[]
+
+  @@index([email])
+  @@index([username])
+  @@index([createdAt])
+  @@map("users")
+}
+
+enum UserRole {
+  USER
+  SELLER
+  ADMIN
+  MODERATOR
+}
+
+enum UserStatus {
+  ACTIVE
+  SUSPENDED
+  BANNED
+  DELETED
+}
+
+model Session {
+  id           String   @id @default(uuid())
+  userId       String
+  refreshToken String   @unique
+  expiresAt    DateTime
+  ipAddress    String?
+  userAgent    String?
+  createdAt    DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([refreshToken])
+  @@map("sessions")
+}
+
+// ===== PROMPTS =====
+
+model Prompt {
+  id              String   @id @default(uuid())
+  slug            String   @unique
+  title           String
+  description     String   @db.Text
+  longDescription String?  @db.Text
+
+  price           Decimal  @db.Decimal(10, 2)
+  discount        Int?     // Percentage
+  originalPrice   Decimal? @db.Decimal(10, 2)
+
+  // Media
+  thumbnail       String
+  previewImages   String[]
+
+  // Classification
+  platform        Platform
+  category        String
+  contentType     ContentType
+  productType     ProductType @default(PROMPT)
+  tags            String[]
+
+  // Social metrics
+  rating          Float    @default(0)
+  reviewCount     Int      @default(0)
+  favoriteCount   Int      @default(0)
+  salesCount      Int      @default(0)
+  viewCount       Int      @default(0)
+
+  // Content (encrypted)
+  content         String   @db.Text
+  drmToken        String   @unique
+
+  // Status
+  status          PromptStatus @default(DRAFT)
+  moderationNotes String?  @db.Text
+
+  // Author
+  authorId        String
+  author          User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  // SEO
+  metaTitle       String?
+  metaDescription String?
+
+  // Timestamps
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  publishedAt     DateTime?
+  deletedAt       DateTime?
+
+  // Relations
+  versions        PromptVersion[]
+  assets          PromptAsset[]
+  orders          OrderItem[]
+  reviews         Review[]
+  favorites       Favorite[]
+  reports         Report[]
+
+  @@index([authorId])
+  @@index([platform])
+  @@index([category])
+  @@index([status])
+  @@index([createdAt])
+  @@index([salesCount])
+  @@index([rating])
+  @@map("prompts")
+}
+
+enum Platform {
+  CHATGPT
+  CLAUDE
+  DALLE
+  MIDJOURNEY
+  SORA
+  VEO
+  GEMINI
+  FLUX
+  STABLE_DIFFUSION
+  LEONARDO_AI
+  RUNWAY
+  GPT4
+  GPT35
+}
+
+enum ContentType {
+  IMAGE
+  TEXT
+  VIDEO
+  AUDIO
+}
+
+enum ProductType {
+  PROMPT
+  BUNDLE
+  APP
+}
+
+enum PromptStatus {
+  DRAFT
+  PENDING_REVIEW
+  APPROVED
+  REJECTED
+  ARCHIVED
+}
+
+model PromptVersion {
+  id          String   @id @default(uuid())
+  promptId    String
+  version     Int
+  content     String   @db.Text
+  changelog   String?  @db.Text
+  createdAt   DateTime @default(now())
+
+  prompt Prompt @relation(fields: [promptId], references: [id], onDelete: Cascade)
+
+  @@unique([promptId, version])
+  @@index([promptId])
+  @@map("prompt_versions")
+}
+
+model PromptAsset {
+  id       String @id @default(uuid())
+  promptId String
+  url      String
+  type     AssetType
+  order    Int    @default(0)
+
+  prompt Prompt @relation(fields: [promptId], references: [id], onDelete: Cascade)
+
+  @@index([promptId])
+  @@map("prompt_assets")
+}
+
+enum AssetType {
+  IMAGE
+  VIDEO
+  DOCUMENT
+}
+
+// ===== ORDERS & PAYMENTS =====
+
+model Order {
+  id              String      @id @default(uuid())
+  orderNumber     String      @unique
+
+  // Buyer & Seller
+  buyerId         String
+  buyer           User        @relation("BuyerOrders", fields: [buyerId], references: [id])
+  sellerId        String
+  seller          User        @relation("SellerOrders", fields: [sellerId], references: [id])
+
+  // Pricing
+  subtotal        Decimal     @db.Decimal(10, 2)
+  commission      Decimal     @db.Decimal(10, 2)
+  total           Decimal     @db.Decimal(10, 2)
+
+  // Status
+  status          OrderStatus @default(PENDING)
+
+  // Timestamps
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  completedAt     DateTime?
+
+  // Relations
+  items           OrderItem[]
+  payment         Payment?
+
+  @@index([buyerId])
+  @@index([sellerId])
+  @@index([status])
+  @@index([createdAt])
+  @@map("orders")
+}
+
+enum OrderStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+  REFUNDED
+  DISPUTED
+}
+
+model OrderItem {
+  id          String  @id @default(uuid())
+  orderId     String
+  promptId    String
+
+  price       Decimal @db.Decimal(10, 2)
+  quantity    Int     @default(1)
+
+  // DRM
+  accessToken String  @unique
+  accessCount Int     @default(0)
+  maxAccess   Int     @default(100)
+
+  order  Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  prompt Prompt @relation(fields: [promptId], references: [id])
+
+  @@index([orderId])
+  @@index([promptId])
+  @@index([accessToken])
+  @@map("order_items")
+}
+
+model Payment {
+  id             String        @id @default(uuid())
+  orderId        String        @unique
+
+  amount         Decimal       @db.Decimal(10, 2)
+  currency       String        @default("USD")
+
+  // Payment provider
+  provider       PaymentProvider
+  providerTxId   String?       // External transaction ID
+
+  // Payment method
+  method         PaymentMethod
+
+  status         PaymentStatus @default(PENDING)
+
+  // Webhook validation
+  webhookReceived Boolean      @default(false)
+  webhookData    Json?
+
+  // Error handling
+  errorCode      String?
+  errorMessage   String?
+
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  paidAt         DateTime?
+
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@index([orderId])
+  @@index([providerTxId])
+  @@index([status])
+  @@map("payments")
+}
+
+enum PaymentProvider {
+  YOOKASSA
+  SBP
+  MIR
+  STRIPE
+}
+
+enum PaymentMethod {
+  CARD
+  BANK_TRANSFER
+  SBP
+  MIR
+  WALLET
+}
+
+enum PaymentStatus {
+  PENDING
+  PROCESSING
+  SUCCEEDED
+  FAILED
+  CANCELLED
+  REFUNDED
+}
+
+// ===== REVIEWS & RATINGS =====
+
+model Review {
+  id         String   @id @default(uuid())
+  promptId   String
+  authorId   String
+  recipientId String
+
+  rating     Int      // 1-5
+  comment    String?  @db.Text
+
+  status     ReviewStatus @default(APPROVED)
+
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  prompt    Prompt @relation(fields: [promptId], references: [id], onDelete: Cascade)
+  author    User   @relation("ReviewAuthor", fields: [authorId], references: [id])
+  recipient User   @relation("ReviewRecipient", fields: [recipientId], references: [id])
+
+  @@unique([promptId, authorId])
+  @@index([promptId])
+  @@index([authorId])
+  @@index([recipientId])
+  @@map("reviews")
+}
+
+enum ReviewStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  FLAGGED
+}
+
+// ===== SOCIAL FEATURES =====
+
+model Favorite {
+  id        String   @id @default(uuid())
+  userId    String
+  promptId  String
+  createdAt DateTime @default(now())
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  prompt Prompt @relation(fields: [promptId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, promptId])
+  @@index([userId])
+  @@index([promptId])
+  @@map("favorites")
+}
+
+model Follower {
+  id          String   @id @default(uuid())
+  followerId  String
+  followingId String
+  createdAt   DateTime @default(now())
+
+  follower  User @relation("Following", fields: [followerId], references: [id], onDelete: Cascade)
+  following User @relation("Followers", fields: [followingId], references: [id], onDelete: Cascade)
+
+  @@unique([followerId, followingId])
+  @@index([followerId])
+  @@index([followingId])
+  @@map("followers")
+}
+
+// ===== AFFILIATES & PAYOUTS =====
+
+model Affiliate {
+  id            String   @id @default(uuid())
+  userId        String
+  code          String   @unique
+  commission    Decimal  @db.Decimal(5, 2) // Percentage
+  totalEarnings Decimal  @default(0) @db.Decimal(10, 2)
+  totalClicks   Int      @default(0)
+  totalSales    Int      @default(0)
+
+  status        AffiliateStatus @default(ACTIVE)
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([code])
+  @@map("affiliates")
+}
+
+enum AffiliateStatus {
+  ACTIVE
+  SUSPENDED
+  TERMINATED
+}
+
+model Payout {
+  id           String       @id @default(uuid())
+  userId       String
+  amount       Decimal      @db.Decimal(10, 2)
+  method       PayoutMethod
+  status       PayoutStatus @default(PENDING)
+
+  bankDetails  Json?
+  notes        String?      @db.Text
+
+  requestedAt  DateTime     @default(now())
+  processedAt  DateTime?
+  completedAt  DateTime?
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([status])
+  @@map("payouts")
+}
+
+enum PayoutMethod {
+  BANK_TRANSFER
+  PAYPAL
+  CRYPTOCURRENCY
+  CARD
+}
+
+enum PayoutStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+  CANCELLED
+}
+
+// ===== MODERATION & REPORTS =====
+
+model Report {
+  id         String       @id @default(uuid())
+  reporterId String
+  promptId   String
+  reason     ReportReason
+  details    String?      @db.Text
+  status     ReportStatus @default(PENDING)
+
+  createdAt  DateTime     @default(now())
+  resolvedAt DateTime?
+
+  reporter User   @relation(fields: [reporterId], references: [id])
+  prompt   Prompt @relation(fields: [promptId], references: [id], onDelete: Cascade)
+
+  @@index([reporterId])
+  @@index([promptId])
+  @@index([status])
+  @@map("reports")
+}
+
+enum ReportReason {
+  SPAM
+  INAPPROPRIATE
+  COPYRIGHT
+  MISLEADING
+  OTHER
+}
+
+enum ReportStatus {
+  PENDING
+  INVESTIGATING
+  RESOLVED
+  DISMISSED
+}
+
+// ===== NOTIFICATIONS =====
+
+model Notification {
+  id        String           @id @default(uuid())
+  userId    String
+  type      NotificationType
+  title     String
+  message   String           @db.Text
+  data      Json?
+  read      Boolean          @default(false)
+  createdAt DateTime         @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([read])
+  @@index([createdAt])
+  @@map("notifications")
+}
+
+enum NotificationType {
+  NEW_SALE
+  NEW_REVIEW
+  NEW_FOLLOWER
+  PAYMENT_RECEIVED
+  PAYOUT_PROCESSED
+  PROMPT_APPROVED
+  PROMPT_REJECTED
+  SYSTEM
+}
+
+// ===== AUDIT LOGS =====
+
+model AuditLog {
+  id         String   @id @default(uuid())
+  userId     String?
+  action     String
+  entity     String
+  entityId   String
+  changes    Json?
+  ipAddress  String?
+  userAgent  String?
+  createdAt  DateTime @default(now())
+
+  @@index([userId])
+  @@index([entity])
+  @@index([entityId])
+  @@index([createdAt])
+  @@map("audit_logs")
+}

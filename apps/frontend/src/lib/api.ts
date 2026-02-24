@@ -59,6 +59,23 @@ export interface Prompt {
   createdAt: string
 }
 
+export interface SellerProfile {
+  id: string
+  name: string
+  username: string
+  avatar: string
+  banner?: string
+  bio: string
+  verified: boolean
+  totalSales: number
+  totalPrompts: number
+  rating: number
+  reviewCount: number
+  followers: number
+  following: number
+  memberSince: string
+}
+
 export interface SocialProof {
   averageRating: number
   reviewCount: number
@@ -86,6 +103,10 @@ export const api = {
       return fetchAPI<Prompt[]>(`/prompts${query ? `?${query}` : ''}`)
     },
     getBySlug: (slug: string) => fetchAPI<Prompt>(`/prompts/${slug}`),
+  },
+  sellers: {
+    getProfile: (username: string) => fetchAPI<SellerProfile>(`/sellers/${username}`),
+    getPrompts: (username: string) => fetchAPI<Prompt[]>(`/sellers/${username}/prompts`),
   },
   stats: {
     getSocialProof: () => fetchAPI<SocialProof>('/stats/social-proof'),

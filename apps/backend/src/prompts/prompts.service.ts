@@ -67,10 +67,10 @@ export class PromptsService {
       salesCount: 523,
       favoriteCount: 178,
       author: {
-        id: 'a2',
-        name: 'Mike Chen',
-        username: 'traveldesignpro',
-        avatar: 'https://i.pravatar.cc/150?img=12',
+        id: 'a10',
+        name: 'Yuki Tanaka',
+        username: 'kawaikreator',
+        avatar: 'https://i.pravatar.cc/150?img=16',
       },
       createdAt: '2024-01-20T14:20:00Z',
     },
@@ -91,10 +91,10 @@ export class PromptsService {
       salesCount: 1203,
       favoriteCount: 445,
       author: {
-        id: 'a3',
-        name: 'Alex Rivera',
-        username: 'futurevisions',
-        avatar: 'https://i.pravatar.cc/150?img=33',
+        id: 'a5',
+        name: 'David Kim',
+        username: 'fantasyartist',
+        avatar: 'https://i.pravatar.cc/150?img=14',
       },
       createdAt: '2024-01-10T08:45:00Z',
     },
@@ -203,10 +203,10 @@ export class PromptsService {
       salesCount: 678,
       favoriteCount: 234,
       author: {
-        id: 'a8',
-        name: 'Sophie Martin',
-        username: 'watercolormaster',
-        avatar: 'https://i.pravatar.cc/150?img=10',
+        id: 'a1',
+        name: 'Sarah Johnson',
+        username: 'artpromptmaster',
+        avatar: 'https://i.pravatar.cc/150?img=1',
       },
       createdAt: '2024-01-12T15:40:00Z',
     },
@@ -364,5 +364,9 @@ export class PromptsService {
 
   getBySlug(slug: string): Prompt | undefined {
     return this.prompts.find(p => p.slug === slug)
+  }
+
+  getByAuthor(username: string): Prompt[] {
+    return this.prompts.filter(p => p.author.username === username)
   }
 }

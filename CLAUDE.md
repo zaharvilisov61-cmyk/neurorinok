@@ -258,6 +258,20 @@ When working on this project, consider these specialized perspectives:
 
 Each perspective should analyze, report, find discrepancies, and suggest improvements.
 
+## Git & GitHub Checkpoints (MANDATORY)
+
+After completing each page OR making significant changes (new module, major refactor, new feature), Claude MUST:
+
+1. Make a local git commit with a descriptive message
+2. Ask the user: **"Сохраняем прогресс на GitHub?"**
+3. If yes — run `git push origin master`
+4. If no — skip push and continue
+
+**Remote:** `https://github.com/zaharvilisov61-cmyk/neurorinok`
+**Branch:** `master`
+
+❗ Never push without asking first.
+
 ## Core Directive
 
 This is not a "copy" of a website. This is a full-scale SaaS product at PromptBase level.

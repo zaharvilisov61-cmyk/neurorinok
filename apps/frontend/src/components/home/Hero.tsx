@@ -43,7 +43,7 @@ export function Hero() {
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
     const query = searchQuery.trim()
-    router.push(query ? `/marketplace?q=${encodeURIComponent(query)}` : '/marketplace')
+    router.push(query ? `/search?q=${encodeURIComponent(query)}` : '/search')
   }
 
   return (

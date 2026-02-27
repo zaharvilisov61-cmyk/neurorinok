@@ -13,7 +13,7 @@ export function TrendingPrompts({ prompts }: TrendingPromptsProps) {
   }))
 
   return (
-    <section className="py-12 bg-bg-primary">
+    <section className="py-5 bg-bg-primary">
       <div className="container-custom">
         {/* Bordered container */}
         <div

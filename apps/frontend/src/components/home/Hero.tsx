@@ -92,11 +92,11 @@ export function Hero() {
       </div>
 
       {/* ── Left content ── */}
-      <div className="container-custom relative z-10 py-12 pb-14">
+      <div className="container-custom relative z-10 py-10 pb-12">
         <div style={{ maxWidth: '520px' }}>
 
           {/* Title */}
-          <h1 className="font-bold text-white leading-tight mb-2" style={{ fontSize: '2.25rem' }}>
+          <h1 className="font-bold text-white leading-tight mb-2" style={{ fontSize: '2.8rem' }}>
             Prompt Marketplace
           </h1>
 

@@ -14,17 +14,19 @@ export function Header() {
       style={{ height: '60px', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }}
     >
       <div className="container-custom h-full flex items-center justify-between">
-        {/* Logo */}
-        <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity flex-shrink-0">
-          <div className="w-6 h-6 bg-gradient-primary rounded" />
-          <span className="text-lg font-semibold">PromptBase</span>
-        </Link>
+        {/* Left: Logo + Categories */}
+        <div className="flex items-center gap-4">
+          <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity flex-shrink-0">
+            <div className="w-6 h-6 bg-gradient-primary rounded" />
+            <span className="text-lg font-semibold">PromptBase</span>
+          </Link>
+          <div className="hidden md:block">
+            <CategoriesMenu />
+          </div>
+        </div>
 
-        {/* Desktop Navigation */}
+        {/* Right: nav links + icons */}
         <nav className="hidden md:flex items-center gap-6">
-          {/* Categories — triggers tab bar on hover */}
-          <CategoriesMenu />
-
           <Link href="/hire" className="text-sm hover:text-accent-blue transition-colors">
             Hire
           </Link>
@@ -37,22 +39,18 @@ export function Header() {
           <Link href="/login" className="text-sm hover:text-accent-blue transition-colors">
             Login
           </Link>
-        </nav>
-
-        {/* Right icons */}
-        <div className="flex items-center gap-3">
-          <button className="hidden md:flex p-2 hover:bg-bg-tertiary rounded-lg transition-colors">
+          <button className="p-2 hover:bg-bg-tertiary rounded-lg transition-colors">
             <MessageCircle className="w-5 h-5" />
           </button>
+        </nav>
 
-          {/* Mobile toggle */}
-          <button
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden p-2 hover:bg-bg-tertiary rounded-lg transition-colors"
-          >
-            {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-          </button>
-        </div>
+        {/* Mobile toggle */}
+        <button
+          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          className="md:hidden p-2 hover:bg-bg-tertiary rounded-lg transition-colors"
+        >
+          {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+        </button>
       </div>
 
       {/* Mobile Menu */}

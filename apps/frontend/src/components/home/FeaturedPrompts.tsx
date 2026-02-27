@@ -26,7 +26,7 @@ export function FeaturedPrompts({ prompts }: FeaturedPromptsProps) {
   }
 
   return (
-    <section className="py-12 bg-bg-primary">
+    <section className="py-5 bg-bg-primary">
       <div className="container-custom">
         {/* Section Header */}
         <div className="flex items-center justify-between mb-6">

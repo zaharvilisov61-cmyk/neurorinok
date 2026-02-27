@@ -122,12 +122,12 @@
 
   /* Container */
   .container-custom {
-    @apply max-w-container mx-auto px-16;
+    @apply max-w-container mx-auto px-8;
   }
 
   @media (max-width: 1280px) {
     .container-custom {
-      @apply px-8;
+      @apply px-6;
     }
   }
 

@@ -1,8 +1,10 @@
 'use client'
 
+import { useEffect, useState } from 'react'
+import { useSearchParams, useRouter } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
-import { Plus, Edit2, Trash2, Package, TrendingUp, Eye } from 'lucide-react'
+import { Plus, Edit2, Trash2, Package, TrendingUp, Eye, CheckCircle, X } from 'lucide-react'
 import { DashboardShell } from '@/components/dashboard/DashboardShell'
 
 type PromptStatus = 'published' | 'draft' | 'pending'
@@ -28,9 +30,37 @@ const STATUS_STYLES: Record<PromptStatus, string> = {
 }
 
 export default function MyPromptsPage() {
+  const searchParams = useSearchParams()
+  const router = useRouter()
+  const [showSuccess, setShowSuccess] = useState(false)
+
+  useEffect(() => {
+    if (searchParams.get('created') === '1') {
+      setShowSuccess(true)
+      // Remove the param from URL without re-render
+      router.replace('/dashboard/prompts', { scroll: false })
+      const t = setTimeout(() => setShowSuccess(false), 5000)
+      return () => clearTimeout(t)
+    }
+  }, [searchParams, router])
+
   return (
     <DashboardShell>
       <div>
+        {/* Success banner */}
+        {showSuccess && (
+          <div className="flex items-center justify-between gap-3 px-4 py-3 rounded-xl mb-5 border border-green-500/30 bg-green-500/10">
+            <div className="flex items-center gap-2">
+              <CheckCircle className="w-4 h-4 text-green-400 flex-shrink-0" />
+              <span className="text-green-400 text-sm font-medium">Prompt published successfully!</span>
+              <span className="text-green-400/60 text-xs">It will appear in the marketplace shortly.</span>
+            </div>
+            <button onClick={() => setShowSuccess(false)} className="text-green-400/50 hover:text-green-400 transition-colors">
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+        )}
+
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <div>

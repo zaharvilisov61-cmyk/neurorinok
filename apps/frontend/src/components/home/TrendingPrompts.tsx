@@ -27,11 +27,22 @@ export function TrendingPrompts({ prompts }: TrendingPromptsProps) {
         </div>
 
         {/* Grid */}
-        <div className="card-grid">
-          {rankedPrompts.map((prompt) => (
-            <PromptCard key={prompt.id} {...prompt} />
-          ))}
-        </div>
+        {rankedPrompts.length === 0 ? (
+          <div className="card-grid">
+            {Array.from({ length: 12 }).map((_, i) => (
+              <div
+                key={i}
+                className="w-[280px] h-[187px] rounded-[16px] bg-bg-secondary animate-pulse"
+              />
+            ))}
+          </div>
+        ) : (
+          <div className="card-grid">
+            {rankedPrompts.map((prompt) => (
+              <PromptCard key={prompt.id} {...prompt} />
+            ))}
+          </div>
+        )}
 
         {/* Load More */}
         <div className="flex justify-center mt-8">

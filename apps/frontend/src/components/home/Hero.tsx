@@ -7,14 +7,14 @@ import { useRouter } from 'next/navigation'
 const PLATFORM_LINKS = [
   { name: 'Midjourney', color: '#ffa94d', href: '/marketplace/midjourney' },
   { name: 'ChatGPT', color: '#6ed654', href: '/marketplace/chatgpt' },
-  { name: 'Veo', color: '#96daff', href: '/marketplace/gemini' },
+  { name: 'Veo', color: '#96daff', href: '/marketplace/veo' },
   { name: 'Gemini', color: '#6ed654', href: '/marketplace/gemini-image' },
 ]
 
 const PUBLISHERS = [
   { name: 'THE VERGE', style: 'font-bold text-xs tracking-tight' },
   { name: 'WIRED', style: 'font-black text-xs tracking-widest' },
-  { name: "FST'COMPANY", style: 'font-bold text-[10px] tracking-wide' },
+  { name: 'Fast Company', style: 'font-bold text-[10px] tracking-wide' },
   { name: 'TechCrunch', style: 'font-bold text-xs' },
   { name: 'The Atlantic', style: 'font-serif text-xs italic' },
   { name: 'WSJ', style: 'font-bold text-xs tracking-widest' },
@@ -47,7 +47,7 @@ export function Hero() {
   }
 
   return (
-    <section className="relative overflow-hidden bg-[#1a1a2e]" style={{ minHeight: '300px' }}>
+    <section className="relative overflow-hidden bg-[#1a1a2e]" style={{ minHeight: '420px' }}>
 
       {/* ── Right-side mosaic background ── */}
       <div

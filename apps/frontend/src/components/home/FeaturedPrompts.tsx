@@ -39,38 +39,49 @@ export function FeaturedPrompts({ prompts }: FeaturedPromptsProps) {
           </Link>
         </div>
 
-        {/* Carousel */}
-        <div className="relative group">
-          {/* Left Arrow - Outside */}
-          <button
-            onClick={() => scroll('left')}
-            className="absolute -left-6 top-1/2 -translate-y-1/2 z-10 w-12 h-12 bg-bg-secondary/90 hover:bg-bg-secondary rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 shadow-card hover:scale-110"
-            aria-label="Scroll left"
-          >
-            <ChevronLeft className="w-6 h-6" />
-          </button>
-
-          {/* Right Arrow - Outside */}
-          <button
-            onClick={() => scroll('right')}
-            className="absolute -right-6 top-1/2 -translate-y-1/2 z-10 w-12 h-12 bg-bg-secondary/90 hover:bg-bg-secondary rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 shadow-card hover:scale-110"
-            aria-label="Scroll right"
-          >
-            <ChevronRight className="w-6 h-6" />
-          </button>
-
-          {/* Scrollable Container */}
-          <div
-            ref={scrollContainerRef}
-            className="flex gap-4 overflow-x-auto no-scrollbar scroll-smooth pb-4"
-          >
-            {prompts.map((prompt) => (
-              <div key={prompt.id} className="flex-shrink-0">
-                <PromptCard {...prompt} />
-              </div>
+        {prompts.length === 0 ? (
+          <div className="flex gap-4 overflow-hidden pb-4">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <div
+                key={i}
+                className="flex-shrink-0 w-[280px] h-[187px] rounded-[16px] bg-bg-secondary animate-pulse"
+              />
             ))}
           </div>
-        </div>
+        ) : (
+          /* Carousel */
+          <div className="relative group">
+            {/* Left Arrow */}
+            <button
+              onClick={() => scroll('left')}
+              className="absolute -left-6 top-1/2 -translate-y-1/2 z-10 w-12 h-12 bg-bg-secondary/90 hover:bg-bg-secondary rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 shadow-card hover:scale-110"
+              aria-label="Scroll left"
+            >
+              <ChevronLeft className="w-6 h-6" />
+            </button>
+
+            {/* Right Arrow */}
+            <button
+              onClick={() => scroll('right')}
+              className="absolute -right-6 top-1/2 -translate-y-1/2 z-10 w-12 h-12 bg-bg-secondary/90 hover:bg-bg-secondary rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 shadow-card hover:scale-110"
+              aria-label="Scroll right"
+            >
+              <ChevronRight className="w-6 h-6" />
+            </button>
+
+            {/* Scrollable Container */}
+            <div
+              ref={scrollContainerRef}
+              className="flex gap-4 overflow-x-auto no-scrollbar scroll-smooth pb-4"
+            >
+              {prompts.map((prompt) => (
+                <div key={prompt.id} className="flex-shrink-0">
+                  <PromptCard {...prompt} />
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </section>
   )

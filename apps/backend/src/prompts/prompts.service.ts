@@ -370,6 +370,49 @@ export class PromptsService {
     },
   ]
 
+  create(data: {
+    title: string
+    description: string
+    platform: string
+    category: string
+    contentType: string
+    price: number
+    thumbnail?: string
+    promptText?: string
+    authorId?: string
+  }): Prompt {
+    const slug = data.title
+      .toLowerCase()
+      .trim()
+      .replace(/[^\w\s-]/g, '')
+      .replace(/[\s_]+/g, '-')
+
+    const prompt: Prompt = {
+      id: (this.prompts.length + 1).toString(),
+      slug,
+      title: data.title,
+      description: data.description,
+      thumbnail: data.thumbnail || 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=500',
+      platform: data.platform,
+      category: data.category,
+      contentType: data.contentType,
+      price: data.price,
+      rating: 0,
+      reviewCount: 0,
+      salesCount: 0,
+      favoriteCount: 0,
+      author: {
+        id: data.authorId || 'new',
+        name: 'New Seller',
+        username: 'newseller',
+      },
+      createdAt: new Date().toISOString(),
+    }
+
+    this.prompts.push(prompt)
+    return prompt
+  }
+
   getFeatured(): Prompt[] {
     return this.prompts.slice(0, 12)
   }

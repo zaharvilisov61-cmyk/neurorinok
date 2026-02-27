@@ -103,6 +103,25 @@ export const api = {
       return fetchAPI<Prompt[]>(`/prompts${query ? `?${query}` : ''}`)
     },
     getBySlug: (slug: string) => fetchAPI<Prompt>(`/prompts/${slug}`),
+    create: async (data: {
+      title: string
+      description: string
+      platform: string
+      category: string
+      contentType: string
+      price: number
+      thumbnail?: string
+      promptText?: string
+    }): Promise<Prompt> => {
+      const response = await fetch(`${API_URL}/prompts`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      })
+      const json: ApiResponse<Prompt> = await response.json()
+      if (!json.success || !json.data) throw new Error(json.error?.message || 'Failed to create prompt')
+      return json.data
+    },
   },
   sellers: {
     getProfile: (username: string) => fetchAPI<SellerProfile>(`/sellers/${username}`),

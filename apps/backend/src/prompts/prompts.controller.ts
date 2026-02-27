@@ -1,9 +1,15 @@
-import { Controller, Get, Query, Param } from '@nestjs/common'
+import { Controller, Get, Post, Body, Query, Param } from '@nestjs/common'
 import { PromptsService } from './prompts.service'
 
 @Controller('prompts')
 export class PromptsController {
   constructor(private readonly promptsService: PromptsService) {}
+
+  @Post()
+  create(@Body() body: any) {
+    const prompt = this.promptsService.create(body)
+    return { success: true, data: prompt }
+  }
 
   @Get('featured')
   getFeatured() {

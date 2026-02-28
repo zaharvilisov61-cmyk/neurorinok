@@ -13,7 +13,7 @@ export function PromptsGrid({ filters }: PromptsGridProps) {
   const [prompts, setPrompts] = useState<PromptCardProps[]>([])
   const [loading, setLoading] = useState(true)
   const [hasMore, setHasMore] = useState(true)
-  const [page, setPage] = useState(1)
+  const [_page, setPage] = useState(1)
   const observerTarget = useRef<HTMLDivElement>(null)
 
   // Fetch prompts when filters change

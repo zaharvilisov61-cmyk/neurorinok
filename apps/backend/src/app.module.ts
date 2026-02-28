@@ -5,6 +5,7 @@ import { StatsModule } from './stats/stats.module'
 import { UploadModule } from './upload/upload.module'
 import { SellersModule } from './sellers/sellers.module'
 import { AuthModule } from './auth/auth.module'
+import { OrdersModule } from './orders/orders.module'
 import { AppController } from './app.controller'
 
 @Module({
@@ -17,6 +18,7 @@ import { AppController } from './app.controller'
     UploadModule,
     SellersModule,
     AuthModule,
+    OrdersModule,
   ],
   controllers: [AppController],
 })

@@ -6,6 +6,7 @@ import { Star, Heart, Share2, Check, ChevronRight, Lock } from 'lucide-react'
 import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/layout/Footer'
 import { PromptCard } from '@/components/ui/PromptCard'
+import { BuyNowButton, BuyNowButtonInline } from '@/components/prompt/BuyNowButton'
 import { api } from '@/lib/api'
 import {
   formatPrice,
@@ -226,18 +227,18 @@ export default async function PromptPage({ params }: Props) {
                     </div>
                     <p className="text-white font-semibold text-base mb-1">Purchase to unlock full prompt</p>
                     <p className="text-white/50 text-sm mb-5">Instant access after payment</p>
-                    {isFree ? (
-                      <button className="px-6 py-2.5 rounded-xl font-semibold text-white bg-green-600 hover:bg-green-500 transition-colors text-sm">
-                        Get for Free
-                      </button>
-                    ) : (
-                      <button
-                        className="px-6 py-2.5 rounded-xl font-semibold text-[#1a1a2e] text-sm transition-opacity hover:opacity-90"
-                        style={{ background: 'linear-gradient(122deg,#ffd7a5,#ff9a9a,#ff7676)' }}
-                      >
-                        Buy for {formatPrice(displayPrice)}
-                      </button>
-                    )}
+                    <BuyNowButtonInline
+                      promptId={prompt.id}
+                      slug={prompt.slug}
+                      title={prompt.title}
+                      thumbnail={prompt.thumbnail}
+                      platform={prompt.platform}
+                      price={prompt.price}
+                      authorName={prompt.author.name}
+                      isFree={isFree}
+                      displayPrice={displayPrice}
+                      formattedPrice={formatPrice(displayPrice)}
+                    />
                   </div>
                 </div>
               </section>
@@ -413,18 +414,18 @@ export default async function PromptPage({ params }: Props) {
                 </div>
 
                 {/* CTA button */}
-                {isFree ? (
-                  <button className="w-full py-3.5 rounded-xl font-semibold text-white bg-green-600 hover:bg-green-500 transition-colors text-base">
-                    Get for Free
-                  </button>
-                ) : (
-                  <button
-                    className="w-full py-3.5 rounded-xl font-semibold text-[#1a1a2e] text-base transition-opacity hover:opacity-90 active:scale-[0.99]"
-                    style={{ background: 'linear-gradient(122deg,#ffd7a5,#ff9a9a,#ff7676)' }}
-                  >
-                    Buy Now
-                  </button>
-                )}
+                <BuyNowButton
+                  promptId={prompt.id}
+                  slug={prompt.slug}
+                  title={prompt.title}
+                  thumbnail={prompt.thumbnail}
+                  platform={prompt.platform}
+                  price={prompt.price}
+                  authorName={prompt.author.name}
+                  isFree={isFree}
+                  displayPrice={displayPrice}
+                  formattedPrice={formatPrice(displayPrice)}
+                />
 
                 <div className="border-t border-[#2a2a45] my-5" />
 

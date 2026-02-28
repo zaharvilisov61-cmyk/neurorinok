@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import { Search, X } from 'lucide-react'
 import { Header } from '@/components/layout/Header'
@@ -26,7 +26,7 @@ const SORT_OPTIONS: { value: MarketplaceFilters['sort']; label: string }[] = [
   { value: 'popular',  label: 'Popular' },
 ]
 
-export default function SearchPage() {
+function SearchContent() {
   const searchParams = useSearchParams()
   const router = useRouter()
 
@@ -212,4 +212,10 @@ export default function SearchPage() {
   )
 }
 
-export const dynamic = 'force-dynamic'
+export default function SearchPage() {
+  return (
+    <Suspense fallback={null}>
+      <SearchContent />
+    </Suspense>
+  )
+}

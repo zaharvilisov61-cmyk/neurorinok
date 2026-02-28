@@ -130,6 +130,25 @@ export const api = {
   stats: {
     getSocialProof: () => fetchAPI<SocialProof>('/stats/social-proof'),
   },
+  orders: {
+    create: async (
+      items: { promptId: string; slug: string; title: string; thumbnail: string; platform: string; price: number; authorName: string }[],
+      paymentMethod: string,
+      token?: string,
+    ) => {
+      const response = await fetch(`${API_URL}/orders`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        body: JSON.stringify({ items, paymentMethod }),
+      })
+      const json: ApiResponse<{ id: string; status: string; total: number }> = await response.json()
+      if (!json.success || !json.data) throw new Error(json.error?.message || 'Failed to create order')
+      return json.data
+    },
+  },
   upload: {
     uploadImage: async (
       file: File,

@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { Suspense, useEffect, useState } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -29,7 +29,7 @@ const STATUS_STYLES: Record<PromptStatus, string> = {
   pending:   'bg-blue-500/15 text-blue-400 border border-blue-500/25',
 }
 
-export default function MyPromptsPage() {
+function MyPromptsContent() {
   const searchParams = useSearchParams()
   const router = useRouter()
   const [showSuccess, setShowSuccess] = useState(false)
@@ -164,5 +164,13 @@ export default function MyPromptsPage() {
         )}
       </div>
     </DashboardShell>
+  )
+}
+
+export default function MyPromptsPage() {
+  return (
+    <Suspense fallback={null}>
+      <MyPromptsContent />
+    </Suspense>
   )
 }

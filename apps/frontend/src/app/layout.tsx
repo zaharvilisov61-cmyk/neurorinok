@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { Finlandica } from 'next/font/google'
 import './globals.css'
 import { Providers } from './providers'
+import { CartDrawer } from '@/components/cart/CartDrawer'
 
 const finlandica = Finlandica({
   subsets: ['latin'],
@@ -63,6 +64,7 @@ export default function RootLayout({
       <body className="bg-bg-primary text-text-primary antialiased">
         <Providers>
           {children}
+          <CartDrawer />
         </Providers>
       </body>
     </html>

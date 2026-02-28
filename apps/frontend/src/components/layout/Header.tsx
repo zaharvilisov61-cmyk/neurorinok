@@ -1,12 +1,21 @@
 'use client'
 
 import Link from 'next/link'
-import { useState } from 'react'
-import { Menu, X, MessageCircle } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { Menu, X, MessageCircle, ShoppingCart } from 'lucide-react'
 import { CategoriesMenu } from './CategoriesMenu'
+import { useCartStore } from '@/store/cartStore'
 
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [cartCount, setCartCount] = useState(0)
+  const items = useCartStore((s) => s.items)
+  const openCart = useCartStore((s) => s.openCart)
+
+  // Avoid SSR hydration mismatch
+  useEffect(() => {
+    setCartCount(items.length)
+  }, [items])
 
   return (
     <header
@@ -39,6 +48,16 @@ export function Header() {
           <Link href="/login" className="text-sm hover:text-accent-blue transition-colors">
             Login
           </Link>
+          {/* Cart icon */}
+          <button onClick={openCart} className="relative p-2 hover:bg-bg-tertiary rounded-lg transition-colors">
+            <ShoppingCart className="w-5 h-5" />
+            {cartCount > 0 && (
+              <span className="absolute -top-0.5 -right-0.5 w-4 h-4 rounded-full text-[10px] font-bold flex items-center justify-center text-[#1a1a2e]"
+                style={{ background: 'linear-gradient(122deg,#ffd7a5,#ff9a9a,#ff7676)' }}>
+                {cartCount > 9 ? '9+' : cartCount}
+              </span>
+            )}
+          </button>
           <button className="p-2 hover:bg-bg-tertiary rounded-lg transition-colors">
             <MessageCircle className="w-5 h-5" />
           </button>

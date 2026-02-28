@@ -147,7 +147,6 @@ export function MarketplaceHeader({
               key={`category-${category}`}
               label={category}
               onRemove={() => {
-                const newCategories = filters.categories.filter((c) => c !== category)
                 onClearFilter('categories')
               }}
             />
